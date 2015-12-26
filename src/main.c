@@ -21,7 +21,7 @@ static void bg_update_proc(Layer *layer, GContext *ctx) {
   // Draw Background Rings
   GRect frame;
     
-  graphics_context_set_fill_color(ctx, GColorPictonBlue);
+  graphics_context_set_fill_color(ctx, GColorVividCerulean);
   graphics_fill_rect(ctx, layer_get_bounds(layer), 0, GCornerNone);
   
   // center dot
@@ -72,7 +72,7 @@ static void hands_update_proc(Layer *layer, GContext *ctx) {
   graphics_context_set_fill_color(ctx, GColorBlack);
   graphics_fill_circle(ctx, second_point, SECOND_RADIUS);
 
-  if (false && bt_connected) {
+  if (bt_connected) {
     text_layer_set_text(s_bt_label, "");
   } else {
     text_layer_set_text(s_bt_label, "");
@@ -110,10 +110,10 @@ static void window_load(Window *window) {
   layer_add_child(window_layer, s_fg_layer);
 
   // Day
-#ifdef PBL_RECT
-  s_day_label = text_layer_create(GRect(57, 69, 30, 24));
-#else
+#ifdef PBL_ROUND
   s_day_label = text_layer_create(GRect(75, 75, 30, 24));
+#else
+  s_day_label = text_layer_create(GRect(57, 69, 30, 24));
 #endif
   text_layer_set_font(s_day_label, fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_24)));
   text_layer_set_text_alignment(s_day_label, GTextAlignmentCenter);
@@ -123,10 +123,10 @@ static void window_load(Window *window) {
   layer_add_child(s_fg_layer, text_layer_get_layer(s_day_label));
 
   // Missing phone
-#ifdef PBL_RECT
-  s_bt_label = text_layer_create(GRect(10, 42, 52, 64));
-#else
+#ifdef PBL_ROUND
   s_bt_label = text_layer_create(GRect(26, 50, 52, 64));
+#else
+  s_bt_label = text_layer_create(GRect(10, 42, 52, 64));
 #endif
   text_layer_set_text_alignment(s_bt_label, GTextAlignmentCenter);
   text_layer_set_text(s_bt_label, "");

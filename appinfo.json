@@ -25,6 +25,7 @@
                 "file": "images/menu.png",
                 "menuIcon": true,
                 "name": "MENU_IMAGE",
+                "targetPlatforms": null,
                 "type": "png"
             },
             {

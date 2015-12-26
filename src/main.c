@@ -147,7 +147,7 @@ static void window_unload(Window *window) {
 static void bt_handler(bool connected) {
   bt_connected = connected;
   if (! connected) {
-    vibes_long_pulse();
+    vibes_double_pulse();
   }
   layer_mark_dirty(s_fg_layer);
 }

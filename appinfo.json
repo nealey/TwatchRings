@@ -1,0 +1,50 @@
+{
+    "appKeys": {},
+    "capabilities": [
+        ""
+    ],
+    "companyName": "dartcatcher@gmail.com",
+    "longName": "Twatch Rings",
+    "projectType": "native",
+    "resources": {
+        "media": [
+            {
+                "file": "images/icon",
+                "name": "IMAGE_ICON",
+                "targetPlatforms": null,
+                "type": "bitmap"
+            },
+            {
+                "characterRegex": "[0-9]",
+                "file": "fonts/Helvetica-Bold.ttf",
+                "name": "FONT_24",
+                "targetPlatforms": null,
+                "type": "font"
+            },
+            {
+                "file": "images/menu.png",
+                "menuIcon": true,
+                "name": "MENU_IMAGE",
+                "type": "png"
+            },
+            {
+                "characterRegex": "[\uf10b]",
+                "file": "fonts/fontawesome-webfont.ttf",
+                "name": "SYMBOLS_64",
+                "targetPlatforms": null,
+                "type": "font"
+            }
+        ]
+    },
+    "sdkVersion": "3",
+    "shortName": "Twatch Rings",
+    "targetPlatforms": [
+        "basalt",
+        "chalk"
+    ],
+    "uuid": "029c47c0-f364-4d8f-bf66-abd35a9008f8",
+    "versionLabel": "1.0",
+    "watchapp": {
+        "watchface": true
+    }
+}

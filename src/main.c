@@ -183,8 +183,13 @@ static void init() {
   gpath_move_to(s_hour_arrow, center);
 
   tick_subscribe();
+  
+#ifdef PBL_ROUND
+  bt_connected = true;
+#else
   bluetooth_connection_service_subscribe(bt_handler);
   bt_connected = bluetooth_connection_service_peek();
+#endif
 }
 
 static void deinit() {

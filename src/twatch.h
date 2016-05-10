@@ -3,15 +3,7 @@
 
 #define SECOND_LEN PBL_IF_ROUND_ELSE(77, 72)
 #define SECOND_RADIUS 7
-static const GPathInfo SECOND_HAND_POINTS = {
-  4,
-  (GPoint []) {
-    {2, -70},
-    {2, PBL_IF_ROUND_ELSE(-90, -85)},
-    {-2, PBL_IF_ROUND_ELSE(-90, -85)},
-    {-2, -70}
-  }
-};
+
 
 #define MINUTE_LEN PBL_IF_ROUND_ELSE(-81, -78)
 static const GPathInfo MINUTE_HAND_POINTS = {

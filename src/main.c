@@ -1,6 +1,9 @@
 #include <pebble.h>
-#include "twatch.h"
 
+#define SECOND_RADIUS 7
+#define SECOND_LEN PBL_IF_ROUND_ELSE(77, 72)
+#define MINUTE_LEN PBL_IF_ROUND_ELSE(80, 78)
+#define HOUR_LEN PBL_IF_ROUND_ELSE(53, 53)
 #define seconds true
 #define fatness PBL_IF_ROUND_ELSE(14, 13)
 #define fat(x) (fatness * PBL_IF_ROUND_ELSE(x, x-1))
@@ -9,13 +12,21 @@ static Window *window;
 static Layer *s_bg_layer, *s_fg_layer, *s_hands_layer;
 static TextLayer *s_day_label, *s_bt_label;
 
-static GPath *s_second_arrow, *s_minute_arrow, *s_hour_arrow;
 static char s_day_buffer[6];
 
 GRect display_bounds;
 GPoint center;
 
 bool bt_connected;
+
+static GPoint point_of_polar(int32_t theta, int r) {
+  GPoint ret = {
+    .x = (int16_t)(sin_lookup(theta) * r / TRIG_MAX_RATIO) + center.x,
+    .y = (int16_t)(-cos_lookup(theta) * r / TRIG_MAX_RATIO) + center.y,
+  };
+  
+  return ret;
+}
 
 static void bg_update_proc(Layer *layer, GContext *ctx) {
   // Draw Background Rings
@@ -55,22 +66,18 @@ static void hands_update_proc(Layer *layer, GContext *ctx) {
   char *b = s_day_buffer;
   
   // minute hand
-  graphics_context_set_fill_color(ctx, GColorWhite);
-  gpath_rotate_to(s_minute_arrow, TRIG_MAX_ANGLE * t->tm_min / 60);
-  gpath_draw_filled(ctx, s_minute_arrow);
+  graphics_context_set_stroke_color(ctx, GColorWhite);
+  graphics_context_set_stroke_width(ctx, 6);
+  graphics_draw_line(ctx, center, point_of_polar(TRIG_MAX_ANGLE * t->tm_min / 60, MINUTE_LEN));
 
   // hour hand
-  gpath_rotate_to(s_hour_arrow, (TRIG_MAX_ANGLE * (((t->tm_hour % 12) * 6) + (t->tm_min / 10))) / (12 * 6));
-  gpath_draw_filled(ctx, s_hour_arrow);
+  graphics_context_set_stroke_width(ctx, 8);
+  graphics_draw_line(ctx, center, point_of_polar(TRIG_MAX_ANGLE * (t->tm_hour % 12) / 12, HOUR_LEN));
   
   // second hand
   int32_t second_angle = TRIG_MAX_ANGLE * t->tm_sec / 60;
-  GPoint second_point = {
-    .x = (int16_t)(sin_lookup(second_angle) * SECOND_LEN / TRIG_MAX_RATIO) + center.x,
-    .y = (int16_t)(-cos_lookup(second_angle) * SECOND_LEN / TRIG_MAX_RATIO) + center.y,
-  };
   graphics_context_set_fill_color(ctx, GColorBlack);
-  graphics_fill_circle(ctx, second_point, SECOND_RADIUS);
+  graphics_fill_circle(ctx, point_of_polar(second_angle, SECOND_LEN), SECOND_RADIUS);
 
   if (bt_connected) {
     text_layer_set_text(s_bt_label, "");
@@ -170,17 +177,9 @@ static void init() {
 
   s_day_buffer[0] = '\0';
 
-  // init paths
-  s_second_arrow = gpath_create(&SECOND_HAND_POINTS);
-  s_minute_arrow = gpath_create(&MINUTE_HAND_POINTS);
-  s_hour_arrow = gpath_create(&HOUR_HAND_POINTS);
-
   Layer *window_layer = window_get_root_layer(window);
   display_bounds = layer_get_bounds(window_layer);
   center = grect_center_point(&display_bounds);
-  gpath_move_to(s_second_arrow, center);
-  gpath_move_to(s_minute_arrow, center);
-  gpath_move_to(s_hour_arrow, center);
 
   tick_subscribe();
   
@@ -189,9 +188,6 @@ static void init() {
 }
 
 static void deinit() {
-  gpath_destroy(s_second_arrow);
-  gpath_destroy(s_minute_arrow);
-  gpath_destroy(s_hour_arrow);
   // XXX: text destroy?
 
   tick_timer_service_unsubscribe();
